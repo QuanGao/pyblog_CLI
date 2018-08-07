@@ -3,11 +3,10 @@ import uuid
 import datetime
 from models.post import Post
 
-class Blog(project):
-    def __init__(self, author, title, content, description, id=None):
+class Blog(object):
+    def __init__(self, author, title, description, id=None):
         self.author = author
         self.title = title
-        self.content = content
         self.description = description
         self.id = uuid.uuid4().hex if id is None else id
 
