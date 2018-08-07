@@ -1,6 +1,6 @@
 from database import Database
 from models.blog import Blog
-
+import sys
 
 class Menu(object):
 
@@ -13,22 +13,26 @@ class Menu(object):
             self._make_new_account()
 
     def run_menu(self):
-        read_or_write = input('Do you want to read (R) or write (W)? ')
+        read_or_write = input('Do you want to read (R), write (W) or exit (other keys)? ')
         if read_or_write == 'R':
             self._list_blogs()
-            self._view_blog(blog_id=blog_id)
+            self._view_blog()
+            self.run_menu()
         elif read_or_write == 'W':
             self.user_blog.new_post()
-        else:
-            print('Please input a valid option: ')
             self.run_menu()
+        else:
+            print("Bye!")
+            sys.exit(0)
+
 
     def _user_has_account(self):
-        user_data = Database.find_one(collection='blogs', query={'author': self.user})
-        print('user_data', user_data)
-        if user_data is None:
+        blog = Database.find_one(collection='blogs', query={'author': self.user})
+        print('user_data', blog)
+        if blog is None:
             return False
         else:
+            self.user_blog = Blog.get_blog(blog['id'])
             return True
 
     def _make_new_account(self):
@@ -42,14 +46,19 @@ class Menu(object):
 
     def _list_blogs(self):
         blogs = Database.find(collection='blogs', query={})
+
         for blog in blogs:
-            print('ID: {}\n\nAuthor: {}\n\nTitle: {}'.
-                  format(blog.id, blog.author, blog.title))
+            print('ID: {} '
+                  'Author: {} '
+                  'Title: {} '.
+                  format(blog['id'], blog['author'], blog['title']))
 
     def _view_blog(self):
         blog_id = input('Enter ID of the blog you want to read ')
         blog = Blog.get_blog(blog_id)
         posts = blog.get_posts()
         for post in posts:
-            print('Title: {}\n\n Date: {}\n\n Content: {}'.
-                  format(post.title, post.date, post.content))
+            print('Title: {} '
+                  'Date: {} '
+                  'Content: {}'.
+                  format(post['title'], post['date'], post['content']))

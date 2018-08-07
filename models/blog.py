@@ -11,9 +11,9 @@ class Blog(object):
         self.id = uuid.uuid4().hex if id is None else id
 
     def new_post(self):
-        title = input('Enter post  title')
-        content = input('Enter post content')
-        date = input('Enter date (MMDDYYYY) or leave blank for today')
+        title = input('Enter post title: ')
+        content = input('Enter post content: ')
+        date = input('Enter date (MMDDYYYY) or leave blank for today: ')
         if date == "":
             date = datetime.datetime.utcnow()
         else:
@@ -41,9 +41,8 @@ class Blog(object):
 
     @classmethod
     def get_blog(cls, id):
-        blog_data = Database.find_one(collection='blogs', query={'id':id})
-        return cls(author = blog_data['author'],
-                   title = blog_data['title'],
-                   content = blog_data['content'],
-                   description = blog_data['description'],
-                   id = blog_data['id'])
+        blog_data = Database.find_one(collection='blogs', query={'id': id})
+        return cls(author=blog_data['author'],
+                   title=blog_data['title'],
+                   description=blog_data['description'],
+                   id=blog_data['id'])
